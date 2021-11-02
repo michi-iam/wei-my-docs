@@ -1,0 +1,47 @@
+// Override default variables before the import
+$gelb: rgb(255, 241, 42);
+$rot: rgb(100, 10, 10);
+$body-bg: rgb(173, 238, 211);
+
+$purple: rgba(86, 4, 88, 0.5);
+$purpletrans: rgba(217, 172, 218, 0.5);
+
+$theme-colors: (
+    "info": tomato,
+    "danger": teal,
+    "warning": blue,
+    "secondary": blue,
+    "pirmary": blue,
+    "success": green,
+    "rot": $rot,
+    "navbarmain": rgb(227, 15, 255),
+    "navbardropdown": rgb(128, 0, 111),
+    "gelb": $gelb,
+    "title": $gelb,
+    "subTitle": rgb(71, 250, 190),
+    "purple": $purple,
+    "purpletrans": $purpletrans,
+    "body-bg": $body-bg,
+);
+
+// basis
+.App {
+    min-height: 100vh;
+}
+
+// header  
+.imagerow {
+    position: relative;
+ 
+}
+.imagetext {
+    position: absolute;
+    top: 50;
+    left: 50;
+    z-index: 10;
+    background-color: $purple;
+    color: rgb(255, 241, 42);
+}
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
