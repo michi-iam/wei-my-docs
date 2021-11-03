@@ -1,10 +1,15 @@
 import React from 'react';
 
-import axios from 'axios';
+
 import { Redirect } from 'react-router';
 
 
+import postDataWithAxios from "./axios/MyPostAxios";
+
+
+
 const URL_OBTAIN_TOKEN = process.env.REACT_APP_URL_OBTAIN_TOKEN;
+
 
 class MyLogin extends React.Component {
     constructor(props){
@@ -25,7 +30,6 @@ class MyLogin extends React.Component {
             [name]: value    });
     }
 
-
     // get tokens
     handleSubmit(event) {
         event.preventDefault();
@@ -33,26 +37,21 @@ class MyLogin extends React.Component {
         var password = this.state.password;
         console.log(username)
         console.log(password)
-    
-   
+
         var self = this;
-        axios.post(URL_OBTAIN_TOKEN, {
+        postDataWithAxios(URL_OBTAIN_TOKEN, {
           username: username,
           password: password,
-  
-        })
-        .then(function (response) {
-          self.props.setToken(response.data.access, response.data.refresh) // pass to app.js
+        }, null, function(data){
+          self.props.setToken(data.access, data.refresh) // pass to app.js
           self.setState({ loggedIn: true })
           window.location.reload(false);
-    
-        })
-        .catch(function (error) {
-          console.log(error);
+        }, function(){
           self.setState({ loggedIn: false })
-        });
+        })
   
       }
+
       render(){
           return(
              this.state.loggedIn ? <Redirect to="/" /> :

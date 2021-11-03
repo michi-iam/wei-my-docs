@@ -1,9 +1,14 @@
 import React from 'react';
-import axios from "axios";
 
 
-import ShowTags from './show/ShowTags';
 import { Redirect } from 'react-router';
+
+
+import getDataWithAxios from "../axios/MyGetAxios";
+import postDataWithAxios from "../axios/MyPostAxios";
+import ShowTags from './show/ShowTags';
+
+
 
 const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
 const URL_GET_ENTRIES_BY_TAGS = process.env.REACT_APP_URL_GET_ENTRIES_BY_TAGS;
@@ -57,18 +62,13 @@ class Main extends React.Component {
 
 
   componentDidMount() {
-    console.log("main hat token")
-    console.log(this.state.token)
+    var self = this;
+    getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
+       self.setState({ allEntries: data.allEntries });
+       self.setState({ allTags: data.allTags });
+       self.setState({ contextReady: true })
+     });
 
-    axios.get(URL_GET_MAIN_CONTEXT)
-    .then(res => {
-      const data = res.data;
-      console.log("data Mount Main");
-      console.log(data);
-      this.setState({ allEntries: data.allEntries });
-      this.setState({ allTags: data.allTags });
-      this.setState({ contextReady: true })
-    })
   }
 
   // Tags in ShowTags.jsx auswählen
@@ -87,27 +87,13 @@ class Main extends React.Component {
     console.log("this.state.token")
     console.log(this.state.token)
       var self = this;
-        axios.defaults.headers.common["Authorization"] = this.state.token; 
-        axios.post(URL_GET_ENTRIES_BY_TAGS, {
-          selectedTags: selectedTags
-  
-        })
-        .then(function (response) {
-          console.log("entriesToShow")
-          console.log(response.data.entriesToShow)
-          self.setState({ entriesToShow: response.data.entriesToShow })
-    
-    
-        })
-        .catch(function (error) {
-          console.log("error ist: ")
-          if(error.response.status === 401){
-            console.log("hier")
-            self.setState({ loggedIn: false })
-          }
-          console.log(error);
-        });
 
+      postDataWithAxios(URL_GET_ENTRIES_BY_TAGS,{selectedTags: selectedTags}, this.state.token,
+        function(data){
+          self.setState({ entriesToShow: data.entriesToShow })
+        }, function(){
+          self.setState({ loggedIn: false })
+        })
   }
 
     render () {

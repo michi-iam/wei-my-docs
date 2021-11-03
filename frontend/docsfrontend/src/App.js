@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React from 'react';
 import MyLogin from './components/MyLogin';
 import Main from './components/docs/Main';
 
@@ -7,14 +7,13 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  
 } from "react-router-dom";
 
 function setToken(userToken, userRefreshToken) {
   console.log("userToken")
   console.log(userToken)
   userToken = "Bearer " + userToken;
-  userRefreshToken = userRefreshToken;
   sessionStorage.setItem('token', userToken);
   sessionStorage.setItem("refreshtoken", userRefreshToken)
 
