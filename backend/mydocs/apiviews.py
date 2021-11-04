@@ -22,6 +22,8 @@ def main_context(request):
         "allTags": tags,
         })
 
+
+# frontend: select tags -> all entries with those tags
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_entries_by_tags(request):
@@ -36,6 +38,20 @@ def get_entries_by_tags(request):
         entriesToShow = EntrySerializer(entries, context={"request": request}, many=True).data
     return Response({"entriesToShow":entriesToShow})
     
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_entry(request):
+    print(request.data)
+   
+    entry = Entry.objects.get(pk=request.data["id"])
+    entry.title = request.data["title"]
+    entry.desc = request.data["desc"]
+    entry.data = request.data["data"]
+    
+    entry.save()
+    
+    return Response({"entry": EntrySerializer(entry).data})
 
 
 def entries_detail(request):

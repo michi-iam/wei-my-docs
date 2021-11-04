@@ -7,6 +7,7 @@ import { Redirect } from 'react-router';
 import getDataWithAxios from "../axios/MyGetAxios";
 import postDataWithAxios from "../axios/MyPostAxios";
 import ShowTags from './show/ShowTags';
+import Entry from "./entries/Entry";
 
 
 
@@ -17,8 +18,6 @@ const URL_GET_ENTRIES_BY_TAGS = process.env.REACT_APP_URL_GET_ENTRIES_BY_TAGS;
 // Tags anzeigen, die ausgewählt wurden 
 // Such-Button
 const showSelectedTags = (selectedTags, removeSelectedTag, getEntriesByTags) => {
-    console.log("show")
-    console.log(selectedTags)
     return selectedTags.length > 0 ? <div className="row">
    { selectedTags.map((tag, i) => { return <div key={ i } className="col-auto">
             <button onClick={() => removeSelectedTag(tag) } className="btn btn-success">{ tag.name }</button>
@@ -35,9 +34,9 @@ const showSelectedTags = (selectedTags, removeSelectedTag, getEntriesByTags) => 
 }
 
 
-const showEntriesToShow = ( entriesToShow ) => {
+const showEntriesToShow = ( entriesToShow, token ) => {
   return Object.keys(entriesToShow).map(function(keyName, keyIndex){
-    return <p key={ keyIndex }>{ entriesToShow[keyName].title }</p>
+    return <Entry key={ keyIndex } entry={ entriesToShow[keyName] } token={ token } />
   })
 }
 
@@ -69,6 +68,7 @@ class Main extends React.Component {
        self.setState({ contextReady: true })
      });
 
+
   }
 
   // Tags in ShowTags.jsx auswählen
@@ -81,11 +81,10 @@ class Main extends React.Component {
       this.setState({ selectedTags: this.state.selectedTags.filter(function(selectedTag){
         return selectedTag !== tag
     })})
+    this.setState({ entriesToShow: []})
   }
 
   getEntriesByTags(selectedTags){
-    console.log("this.state.token")
-    console.log(this.state.token)
       var self = this;
 
       postDataWithAxios(URL_GET_ENTRIES_BY_TAGS,{selectedTags: selectedTags}, this.state.token,
@@ -101,13 +100,14 @@ class Main extends React.Component {
      var selectedTags = this.state.selectedTags;
      var entriesToShow = this.state.entriesToShow;
      var loggedIn = this.state.loggedIn;
+     const token = this.state.token;
 
       return loggedIn ? <div className='container'>
                             <h1>Main</h1>
                             { contextReady ? <ShowTags allTags={ this.state.allTags } selectTag={ this.selectTag } /> 
                             : "" }
                             { showSelectedTags(selectedTags, this.removeSelectedTag, this.getEntriesByTags) }
-                            { showEntriesToShow(entriesToShow) }
+                            { showEntriesToShow(entriesToShow, token) }
                           </div>  
     : <Redirect to="/login" />
     }

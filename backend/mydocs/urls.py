@@ -5,6 +5,7 @@ from . import apiviews
 urlpatterns = [
     path('main_context/', apiviews.main_context),
     path('get_entries_by_tags/', apiviews.get_entries_by_tags),
+    path('update_entry/', apiviews.update_entry),
     path('entries/<int:pk>', apiviews.entries_detail),
 ]
 

@@ -15,8 +15,6 @@ class ShowTags extends React.Component {
        
       componentDidMount(){
         this.setState({ allTags: this.props.allTags })
-        console.log("Mount Show Tags")
-        console.log(this.state.allTags)
       }
 
       render(){

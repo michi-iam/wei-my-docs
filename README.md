@@ -19,7 +19,6 @@
 * Forms
     * add tag
     * add entry
-    * edit entry
 * Lookups
     * get entry by title (< select >)
 * Auth
