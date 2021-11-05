@@ -10,7 +10,7 @@ class Tag(models.Model):
 
 
 class Entry(models.Model):
-    tag = models.ManyToManyField(Tag, blank=True)
+    tag = models.ManyToManyField(Tag, blank=True) #omg tagsssss
     title = models.CharField(max_length=160, null=True, blank=True)
     desc = models.TextField(null=True, blank=True)
     data = models.JSONField(null=True, blank=True)

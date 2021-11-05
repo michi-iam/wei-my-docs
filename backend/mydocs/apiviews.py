@@ -63,9 +63,13 @@ def add_new_tag(request):
 @permission_classes([IsAuthenticated])
 def add_new_entry(request):
     entry = Entry();
-    entry.data = request.data["tags"]
+    tags = request.data["tags"]
     entry.title = request.data["title"]
     entry.desc = request.data["desc"]
+    entry.save()
+    for i in tags:
+        tag = Tag.objects.get(pk=i)
+        entry.tag.add(tag)
     entry.save()
     return Response({"entry": EntrySerializer(entry).data })
 

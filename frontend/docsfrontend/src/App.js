@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import MyLogin from './components/MyLogin';
 import Main from './components/docs/Main';
+import MyNavbar from "./components/navbar/MyNavbar";
 
 import {
   BrowserRouter as Router,
@@ -9,6 +10,7 @@ import {
   Route,
   
 } from "react-router-dom";
+import NewEntry from './components/docs/entries/NewEntry';
 
 function setToken(userToken, userRefreshToken) {
   console.log("userToken")
@@ -34,17 +36,26 @@ function App() {
   var token = getToken();
 
     return (
+      <>
+      
       <Router>
-        { token ? <Switch>
+        { token ? <>
+          <MyNavbar />
+          <Switch>
                     <Route path="/login" component={ MyLogin }>
                           <MyLogin setToken={ setToken } /> 
-                        </Route>
+                    </Route>
+                    <Route path="/new" component={ NewEntry } >
+                      <NewEntry token={ token } />
+                    </Route>
                     <Route path="/">
                         <Main token={ token } />      
                     </Route>
                   </Switch> 
+        </>
         : <MyLogin setToken={ setToken} /> }
       </Router>
+      </>
     );
 
 

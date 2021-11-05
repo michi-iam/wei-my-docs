@@ -1,10 +1,10 @@
 import React from 'react';
 import postDataWithAxios from "../../axios/MyPostAxios"; 
-
+import getDataWithAxios from "../../axios/MyGetAxios";
 import Entry from "./Entry";
 
 const URL_ADD_NEW_ENTRY = process.env.REACT_APP_URL_ADD_NEW_ENTRY;
-
+const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
 
 class TagButton extends React.Component {
     constructor(props){
@@ -73,7 +73,7 @@ class NewEntry extends React.Component {
         
         this.state = {
           token: this.props.token,
-          allTags: this.props.allTags,
+          allTags: [],
 
           entry: null, // no entry added yet
 
@@ -87,6 +87,21 @@ class NewEntry extends React.Component {
         this.addTag = this.addTag.bind(this);
         this.removeTag = this.removeTag.bind(this);
         
+      }
+
+      componentDidMount() {
+          if(! this.props.allTags){
+              var self = this;
+              getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
+                 self.setState({ allTags: data.allTags });
+               });
+
+          }
+          else {
+              this.setState({ allTags: this.props.allTags })
+          }
+    
+    
       }
 
 
