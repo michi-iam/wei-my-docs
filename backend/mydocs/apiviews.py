@@ -27,7 +27,6 @@ def main_context(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_entries_by_tags(request):
-    print(request)
     selectedTags = request.data["selectedTags"]
     entries = Entry.objects.all()
     for tag in selectedTags:
@@ -42,16 +41,33 @@ def get_entries_by_tags(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_entry(request):
-    print(request.data)
-   
     entry = Entry.objects.get(pk=request.data["id"])
     entry.title = request.data["title"]
     entry.desc = request.data["desc"]
     entry.data = request.data["data"]
-    
     entry.save()
-    
     return Response({"entry": EntrySerializer(entry).data})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_new_tag(request):
+    name = request.data["name"]
+    tag = Tag.objects.create(name=name)
+    tags = Tag.objects.all()
+    tags = TagSerializer(tags, context={"request": request}, many=True).data
+    return Response({ "allTags": tags })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_new_entry(request):
+    entry = Entry();
+    entry.data = request.data["tags"]
+    entry.title = request.data["title"]
+    entry.desc = request.data["desc"]
+    entry.save()
+    return Response({"entry": EntrySerializer(entry).data })
 
 
 def entries_detail(request):

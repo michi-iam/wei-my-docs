@@ -8,6 +8,7 @@ import getDataWithAxios from "../axios/MyGetAxios";
 import postDataWithAxios from "../axios/MyPostAxios";
 import ShowTags from './show/ShowTags';
 import Entry from "./entries/Entry";
+import NewEntry from './entries/NewEntry';
 
 
 
@@ -46,6 +47,7 @@ class Main extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+        addNewEntry: false, // get form to add new entry
         token: this.props.token,
         loggedIn: true,
         contextReady: false,
@@ -57,6 +59,8 @@ class Main extends React.Component {
     this.selectTag = this.selectTag.bind(this);
     this.removeSelectedTag = this.removeSelectedTag.bind(this);
     this.getEntriesByTags = this.getEntriesByTags.bind(this);
+    this.addNewEntryForm = this.addNewEntryForm.bind(this);
+  
   }
 
 
@@ -95,19 +99,31 @@ class Main extends React.Component {
         })
   }
 
+  addNewEntryForm() {
+    this.setState({ addNewEntry: true })
+  }
+
     render () {
      var contextReady = this.state.contextReady;
      var selectedTags = this.state.selectedTags;
      var entriesToShow = this.state.entriesToShow;
      var loggedIn = this.state.loggedIn;
+     const addNewEntryForm = this.addNewEntryForm;
+     var addNewEntry = this.state.addNewEntry;
      const token = this.state.token;
+     var allTags = this.state.allTags
 
       return loggedIn ? <div className='container'>
+                        { addNewEntry ? <NewEntry token={ token } allTags={ allTags }/>
+                        : <div> 
                             <h1>Main</h1>
-                            { contextReady ? <ShowTags allTags={ this.state.allTags } selectTag={ this.selectTag } /> 
+                            { contextReady ? <ShowTags allTags={ this.state.allTags } selectTag={ this.selectTag } token={ token } /> 
                             : "" }
                             { showSelectedTags(selectedTags, this.removeSelectedTag, this.getEntriesByTags) }
                             { showEntriesToShow(entriesToShow, token) }
+
+                            <button onClick={() => addNewEntryForm() }>neuer Eintrag</button>
+                          </div>}
                           </div>  
     : <Redirect to="/login" />
     }

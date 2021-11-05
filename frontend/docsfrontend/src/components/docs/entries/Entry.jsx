@@ -52,8 +52,8 @@ const showEntry = (entry, entryData, clickFunction) => {
 
 
 // form to edit entry
-const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, handleDataChangeFunction) => {
-    return <div key={ entry.id } className="container bg-danger p-5" >
+const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, handleDataChangeFunction, addDataField, deleteDataField) => {
+    return <div className="container bg-danger p-5" >
         <div className="row" >
             <h1>Eintrag bearbeiten</h1>
         </div>
@@ -67,14 +67,20 @@ const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, h
                     <div className="row mt-2">
                     {entryData ? <div> {Object.keys(entryData).map(function(keyName, keyIndex){
                         return <div key={keyIndex} className="row bg-info p-1 mt-2">
-                            <div className="col-6">
+                            <div className="col-5">
                                 <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "key", keyName) } type="text" defaultValue={ keyName } className="form-control"/>
                             </div>
                             <div className="col-6">
                                 <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "value", keyName) } type="text" defaultValue={ entryData[keyName] } className="form-control"/>
                             </div>
+                            <div className="col-1">
+                                <button onClick={() => deleteDataField(keyName) } className="btn btn-danger">X</button>
                             </div>
-                    })} <button>add</button> </div>: ""}
+                        </div>
+                    })} </div>: ""}
+                    <div>
+                        <button type="button" onClick={() => addDataField() }>add</button>
+                    </div>
                     <div>
                         <button type="submit">ändern</button>
                     </div>
@@ -94,6 +100,7 @@ class Entry extends React.Component {
         this.state = {
           edit: false, // 0: showEntry or 1: showEntryForm  
           token: this.props.token,
+          
           entry: this.props.entry,
 
           id: this.props.entry.id,
@@ -106,9 +113,31 @@ class Entry extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleDataChange = this.handleDataChange.bind(this); // handle change for entry.data 
+        this.addDataField = this.addDataField.bind(this);
+        this.deleteDataField = this.deleteDataField.bind(this);
 
       }
 
+      // add field to entry.data
+      addDataField() {
+          var data = this.state.data;
+          if(data){
+              data[""] = "";
+          }
+          else {
+              data = {"":""}
+          }
+          this.setState({ data: data });
+
+      }
+
+      deleteDataField(keyName) {
+          console.log(this.state.data)
+          var data = this.state.data;
+          delete(data[keyName])
+          console.log(data)
+
+      }
 
       toggleEdit() {
           this.state.edit ? this.setState({ edit: false }) : this.setState({ edit: true });
@@ -170,8 +199,10 @@ class Entry extends React.Component {
         var submitFunction = this.handleSubmit;
         var handleChangeFunction = this.handleChange;
         var handleDataChange = this.handleDataChange;
+        var addDataField = this.addDataField;
+        var deleteDataField = this.deleteDataField;
         return(
-            edit ? showEntryForm(entry, entryData, submitFunction, handleChangeFunction, handleDataChange) 
+            edit ? showEntryForm(entry, entryData, submitFunction, handleChangeFunction, handleDataChange, addDataField, deleteDataField) 
             : showEntry(entry, entryData, toggleEdit)
         )
       }

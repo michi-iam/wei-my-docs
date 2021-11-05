@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export default async function postDataWithAxios(url, postData, token = null, funky, funkyFail){
+export default async function postDataWithAxios(url, postData, token = null, funky, funkyFail=null){
 
  
    if(token){
@@ -14,7 +14,9 @@ export default async function postDataWithAxios(url, postData, token = null, fun
 
     })
     .catch(function (error) {
-        funkyFail();
+        if(funkyFail){
+            funkyFail()
+        }
    
       
     });
