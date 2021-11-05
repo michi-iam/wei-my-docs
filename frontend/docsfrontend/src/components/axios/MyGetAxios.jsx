@@ -1,7 +1,6 @@
 import axiosInstance from "./MyAxios";
 
 
-
 export default async function getDataWithAxios(url, funky){
     axiosInstance.get(url)
     .then(response => {

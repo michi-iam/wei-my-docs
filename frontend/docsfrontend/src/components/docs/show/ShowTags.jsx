@@ -1,30 +1,13 @@
 import React from 'react';
+
+
 import postDataWithAxios from '../../axios/MyPostAxios';
-import NewTag from "./NewTag";
 import getDataWithAxios from "../../axios/MyGetAxios";
+import NewTag from "./NewTag";
+
 
 const URL_ADD_NEW_TAG = process.env.REACT_APP_URL_ADD_NEW_TAG
 const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
-
-
-
-
-
-
-// Replaced with AddTag
-// const addTagForm = (handleChange, handleSubmit) => {
-//   return <div className="row">
-//     <div className="row">
-//       <h4>neuer Tag</h4>
-//     </div>
-//     <div className="row">
-//       <form onSubmit={event => handleSubmit(event) }>
-//         <input type="text" name="newTagName" onChange={event => handleChange(event)} />
-//         <button type="submit">eintragen</button>
-//       </form>
-//     </div>
-//   </div>
-// }
 
 
 class ShowTags extends React.Component {
@@ -42,7 +25,6 @@ class ShowTags extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
       }
        
-
 
       componentDidMount() {
         if(this.props.addOne){
