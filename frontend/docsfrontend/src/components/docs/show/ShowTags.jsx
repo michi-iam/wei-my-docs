@@ -88,7 +88,6 @@ class ShowTags extends React.Component {
         var allTags = this.state.allTags;
         var selectTag = this.props.selectTag;
         var addOne = this.state.addOne;
-        var newTagForm = this.newTagForm;
         var handleChange = this.handleChange;
         var handleSubmit = this.handleSubmit;
         return(

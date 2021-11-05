@@ -11,6 +11,7 @@ from . serializers import TagSerializer, EntrySerializer
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def main_context(request):
     entries = Entry.objects.all()
     entries = EntrySerializer(entries, context={"request": request}, many=True).data

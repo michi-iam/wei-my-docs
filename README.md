@@ -18,6 +18,5 @@
 ## <ins>Todos</ins> 
 * Lookups
     * get entry by title (< select >)
-* Auth
-    * set axios to refresh token, when token is expired
+* Refactoring
 

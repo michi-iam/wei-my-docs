@@ -102,7 +102,7 @@ class Main extends React.Component {
         function(data){
           self.setState({ entriesToShow: data.entriesToShow })
         }, function(){
-          self.setState({ loggedIn: false })
+          //self.setState({ loggedIn: false })
         })
   }
 
@@ -115,7 +115,6 @@ class Main extends React.Component {
      var selectedTags = this.state.selectedTags;
      var entriesToShow = this.state.entriesToShow;
      var loggedIn = this.state.loggedIn;
-     const addNewEntryForm = this.addNewEntryForm;
      var addNewEntry = this.state.addNewEntry;
      const token = this.state.token;
      var allTags = this.state.allTags

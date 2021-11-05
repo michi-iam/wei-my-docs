@@ -44,13 +44,13 @@ function App() {
         { token ? <>
           <MyNavbar />
           <Switch>
-                    <Route path="/login" component={ MyLogin }>
+                    <Route path="/login" >
                           <MyLogin setToken={ setToken } /> 
                     </Route>
-                    <Route path="/newtag" component={ ShowTags } >
+                    <Route path="/newtag" >
                       <ShowTags token={ token } addOne={ true } />
                     </Route>
-                    <Route path="/new" component={ NewEntry } >
+                    <Route path="/new"  >
                       <NewEntry token={ token } />
                     </Route>
                     <Route path="/">

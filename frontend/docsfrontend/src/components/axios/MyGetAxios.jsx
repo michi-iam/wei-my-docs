@@ -1,14 +1,15 @@
-import axios from "axios";
+import axiosInstance from "./MyAxios";
+
 
 
 export default async function getDataWithAxios(url, funky){
-
-    await axios.get(url)
-    .then(res => {
-        var data = res.data;
+    axiosInstance.get(url)
+    .then(response => {
+        var data = response.data;
         funky(data)
+    }).catch(function (error) {
+        console.log(error)
     });
-   
 }
 
 
