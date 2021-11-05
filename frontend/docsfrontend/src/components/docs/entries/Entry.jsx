@@ -23,11 +23,11 @@ const renameObjectKey = (object, oldName, newName) => {
 
 // show entrys (no edit)
 const showEntry = (entry, entryData, clickFunction) => {
-    return <div className="container mt-3">
-        <div className="row justify-content-center bg-danger">
+    return <div className="container mt-5 mb-5 border border-1 border-dark">
+        <div className="row justify-content-center bg-success p-2">
             <h1>{ entry.title }</h1>
         </div>
-        <div className="row bg-warning">
+        <div className="row bg-warning pt-3">
             { entry.desc ? <p style={{ whiteSpace: "pre" }}>{ entry.desc }</p> : "" }
         </div>
         {entryData ? Object.keys(entryData).map(function(keyName, keyIndex){
@@ -41,9 +41,9 @@ const showEntry = (entry, entryData, clickFunction) => {
                 </div>
         }) : ""}
         { entry.title === "nichts gefunden" ? "" 
-        : <div className="row justify-content-center">
-            <div className="col-8">
-                <button onClick={() => clickFunction() } className="btn btn-warning">edit</button>
+        : <div className="row justify-content-end bg-secondary p-3 ">
+            <div className="col-8 text-end">
+                <button onClick={() => clickFunction() } className="btn btn-danger">edit</button>
                 </div>
             </div>
             }
@@ -53,36 +53,38 @@ const showEntry = (entry, entryData, clickFunction) => {
 
 // form to edit entry
 const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, handleDataChangeFunction, addDataField, deleteDataField) => {
-    return <div className="container bg-danger p-5" >
+    return <div className="container bg-warning rounded mt-5 p-5" >
         <div className="row" >
-            <h1>Eintrag bearbeiten</h1>
+            <h1 className="bg-success p-3 rounded">Eintrag bearbeiten</h1>
         </div>
         <div className="row">
             <form onSubmit={event => submitFunction(event)}>
                 <div className="row ">
-                    <label htmlFor="title" className="form-label">Titel</label>
-                    <input onChange={event => handleChangeFunction(event) } type="text" name="title" defaultValue={ entry.title } className="form-control" autoFocus/>
-                    <label htmlFor="desc" className="form-label">Description</label>
-                    <textarea onChange={event => handleChangeFunction(event) } type="text" name="desc" defaultValue={ entry.desc } className="form-control" />
+                    <label htmlFor="title" className="form-label mb-2 mt-5">Titel</label>
+                    <input onChange={event => handleChangeFunction(event) } type="text" name="title" defaultValue={ entry.title } className="form-control bg-light" autoFocus/>
+                    <label htmlFor="desc" className="form-label mb-2 mt-5">Description</label>
+                    <textarea rows="40" onChange={event => handleChangeFunction(event) } type="text" name="desc" defaultValue={ entry.desc } className="form-control bg-light" />
                     <div className="row mt-2">
                     {entryData ? <div> {Object.keys(entryData).map(function(keyName, keyIndex){
-                        return <div key={keyIndex} className="row bg-info p-1 mt-2">
+                        return <div key={keyIndex} className="row p-1 mt-2">
                             <div className="col-5">
-                                <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "key", keyName) } type="text" defaultValue={ keyName } className="form-control"/>
+                                <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "key", keyName) } type="text" defaultValue={ keyName } className="form-control bg-light"/>
                             </div>
                             <div className="col-6">
-                                <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "value", keyName) } type="text" defaultValue={ entryData[keyName] } className="form-control"/>
+                                <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "value", keyName) } type="text" defaultValue={ entryData[keyName] } className="form-control bg-light"/>
                             </div>
-                            <div className="col-1">
-                                <button onClick={() => deleteDataField(keyName) } className="btn btn-danger">X</button>
+                            <div className="col-1 text-end">
+                                <button type="button" onClick={() => deleteDataField(keyName) } className="btn btn-danger">X</button>
                             </div>
                         </div>
                     })} </div>: ""}
-                    <div>
-                        <button type="button" onClick={() => addDataField() }>add</button>
+                    <div className="row justify-content-center ">
+                        <div className="col-8 text-center">
+                            <button type="button" onClick={() => addDataField() } className="btn btn-info mt-3">add Datafield</button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="submit">ändern</button>
+                    <div className="mt-5 text-end">
+                        <button className="btn btn-success" type="submit">Eintrag ändern</button>
                     </div>
                     </div>
                 </div>
@@ -135,6 +137,7 @@ class Entry extends React.Component {
           console.log(this.state.data)
           var data = this.state.data;
           delete(data[keyName])
+          this.setState({ data: data})
           console.log(data)
 
       }

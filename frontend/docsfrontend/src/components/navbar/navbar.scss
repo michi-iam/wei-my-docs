@@ -1,0 +1,6 @@
+#myNavbar {
+    background-color: $navbarmain;
+    & .dropdown-menu {
+        background-color: $navbardropdown;
+    }
+}

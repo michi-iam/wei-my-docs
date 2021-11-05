@@ -16,9 +16,6 @@
 <br />
 
 ## <ins>Todos</ins> 
-* Forms
-    * add tag
-    * add entry
 * Lookups
     * get entry by title (< select >)
 * Auth

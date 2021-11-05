@@ -19,16 +19,23 @@ const URL_GET_ENTRIES_BY_TAGS = process.env.REACT_APP_URL_GET_ENTRIES_BY_TAGS;
 // Tags anzeigen, die ausgewählt wurden 
 // Such-Button
 const showSelectedTags = (selectedTags, removeSelectedTag, getEntriesByTags) => {
-    return selectedTags.length > 0 ? <div className="row">
-   { selectedTags.map((tag, i) => { return <div key={ i } className="col-auto">
-            <button onClick={() => removeSelectedTag(tag) } className="btn btn-success">{ tag.name }</button>
-        </div> } ) } <div className="row justify-content-center">
-          <div className="col-8">
-            <div className="row">
-              <button className="btn btn-warning mt-2" onClick={() => getEntriesByTags(selectedTags) }>suchen</button>
+    return selectedTags.length > 0 ? <div className="row mt-3">
+      <div className="row justify-content-center">
+        <div className="col-8 text-center">
+          <h3 className="myPageTitle">ausgewählte Tags</h3>
+        </div>
+      </div>
+        <div className="row justify-content-center">
+    { selectedTags.map((tag, i) => { return <div key={ i } className="col-auto">
+              <button onClick={() => removeSelectedTag(tag) } className="btn btn-success">{ tag.name }</button>
+          </div> } ) } <div className="row justify-content-center">
+            <div className="col-8">
+              <div className="row mt-2">
+                <button className="btn btn-warning mt-2" onClick={() => getEntriesByTags(selectedTags) }>suchen</button>
+              </div>
             </div>
           </div>
-        </div>
+      </div>
     </div>
     :
     <div></div> 
@@ -116,13 +123,15 @@ class Main extends React.Component {
       return loggedIn ? <div className='container'>
                         { addNewEntry ? <NewEntry token={ token } allTags={ allTags }/>
                         : <div> 
-                            <h1>Main</h1>
+                            <div className="row text-center mt-5">
+                              <h1 className="myPageTitle">Suchen</h1>
+                            </div>
                             { contextReady ? <ShowTags allTags={ this.state.allTags } selectTag={ this.selectTag } token={ token } /> 
                             : "" }
                             { showSelectedTags(selectedTags, this.removeSelectedTag, this.getEntriesByTags) }
                             { showEntriesToShow(entriesToShow, token) }
 
-                            <button onClick={() => addNewEntryForm() }>neuer Eintrag</button>
+                            {/* <button onClick={() => addNewEntryForm() }>neuer Eintrag</button> */}
                           </div>}
                           </div>  
     : <Redirect to="/login" />

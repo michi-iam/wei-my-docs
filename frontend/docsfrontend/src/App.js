@@ -11,6 +11,8 @@ import {
   
 } from "react-router-dom";
 import NewEntry from './components/docs/entries/NewEntry';
+import ShowTags from './components/docs/show/ShowTags';
+
 
 function setToken(userToken, userRefreshToken) {
   console.log("userToken")
@@ -44,6 +46,9 @@ function App() {
           <Switch>
                     <Route path="/login" component={ MyLogin }>
                           <MyLogin setToken={ setToken } /> 
+                    </Route>
+                    <Route path="/newtag" component={ ShowTags } >
+                      <ShowTags token={ token } addOne={ true } />
                     </Route>
                     <Route path="/new" component={ NewEntry } >
                       <NewEntry token={ token } />

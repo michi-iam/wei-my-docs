@@ -1,23 +1,30 @@
 import React from 'react';
 import postDataWithAxios from '../../axios/MyPostAxios';
-
+import NewTag from "./NewTag";
+import getDataWithAxios from "../../axios/MyGetAxios";
 
 const URL_ADD_NEW_TAG = process.env.REACT_APP_URL_ADD_NEW_TAG
+const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
 
 
-const addTagForm = (handleChange, handleSubmit) => {
-  return <div className="row">
-    <div className="row">
-      <h4>neuer Tag</h4>
-    </div>
-    <div className="row">
-      <form onSubmit={event => handleSubmit(event) }>
-        <input type="text" name="newTagName" onChange={event => handleChange(event)} />
-        <button type="submit">eintragen</button>
-      </form>
-    </div>
-  </div>
-}
+
+
+
+
+// Replaced with AddTag
+// const addTagForm = (handleChange, handleSubmit) => {
+//   return <div className="row">
+//     <div className="row">
+//       <h4>neuer Tag</h4>
+//     </div>
+//     <div className="row">
+//       <form onSubmit={event => handleSubmit(event) }>
+//         <input type="text" name="newTagName" onChange={event => handleChange(event)} />
+//         <button type="submit">eintragen</button>
+//       </form>
+//     </div>
+//   </div>
+// }
 
 
 class ShowTags extends React.Component {
@@ -36,9 +43,23 @@ class ShowTags extends React.Component {
       }
        
 
-      componentDidMount(){
-        this.setState({ allTags: this.props.allTags })
-      }
+
+      componentDidMount() {
+        if(this.props.addOne){
+          this.setState({ addOne: true })
+        }
+
+        if(! this.props.allTags){
+            var self = this;
+            getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
+               self.setState({ allTags: data.allTags });
+             });
+        }
+        else {
+            this.setState({ allTags: this.props.allTags })
+        }
+    }
+
 
       newTagForm() {
         this.setState({ addOne: true })
@@ -71,11 +92,11 @@ class ShowTags extends React.Component {
         var handleChange = this.handleChange;
         var handleSubmit = this.handleSubmit;
         return(
-          <div className="row">
-            <div className="row">
+          <div className="container">
+            {/* <div className="row">
                 <button onClick={() => newTagForm() }>neuer Tag</button>
-            </div>
-            { addOne ? addTagForm(handleChange, handleSubmit)
+            </div> */}
+            { addOne ? <NewTag handleChange={handleChange} handleSubmit={handleSubmit} /> //addTagForm(handleChange, handleSubmit)
             : <div className="row">
                 {Object.keys(allTags).map(function(keyName, keyIndex){
                   return <div className="col-auto m-2 " key={ keyIndex }>

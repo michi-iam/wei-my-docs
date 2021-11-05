@@ -6,22 +6,29 @@ $body-bg: rgb(173, 238, 211);
 $purple: rgba(86, 4, 88, 0.5);
 $purpletrans: rgba(217, 172, 218, 0.5);
 
+$navbarmain: rgb(227, 15, 255);
+$navbardropdown:rgb(185, 153, 181); 
+
+$pageTitle: rgb(64, 170, 73);
+
 $theme-colors: (
-    "info": tomato,
-    "danger": teal,
-    "warning": blue,
-    "secondary": blue,
-    "pirmary": blue,
-    "success": green,
+    "info": rgb(71, 255, 255),
+    "danger": rgb(83, 14, 2),
+    "warning": rgb(255, 187, 0),
+    "secondary": rgb(137, 243, 194),
+    "dark": rgb(34, 32, 32),
+    "pirmary": rgb(0, 81, 255),
+    "success": rgb(71, 179, 0),
     "rot": $rot,
-    "navbarmain": rgb(227, 15, 255),
-    "navbardropdown": rgb(128, 0, 111),
+    "navbarmain": $navbarmain,
+    "navbardropdown": $navbardropdown,
     "gelb": $gelb,
     "title": $gelb,
     "subTitle": rgb(71, 250, 190),
     "purple": $purple,
     "purpletrans": $purpletrans,
     "body-bg": $body-bg,
+    "light": rgb(243, 247, 243),
 );
 
 // basis
@@ -44,4 +51,14 @@ $theme-colors: (
 }
 
 // Import Bootstrap and its default variables
-@import '~bootstrap/scss/bootstrap.scss';
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+@import "./components/navbar/navbar.scss";
+
+
+.myPageTitle {
+    @extend .rounded;
+    @extend .p-3;
+    @extend .mb-5;
+    background-color: $pageTitle;
+} 

@@ -40,7 +40,7 @@ class TagButton extends React.Component {
         const selectTag = this.selectTag;
         var selected = this.state.selected;
         return(
-        <button onClick={() => selectTag() } className={ selected ? "btn btn-success" : "btn btn-danger"}>{ tag.name }</button>
+        <button onClick={() => selectTag() } className={ selected ? "btn btn-success" : "btn btn-danger text-success fw-bolder"}>{ tag.name }</button>
         )
     }
 }
@@ -48,17 +48,27 @@ class TagButton extends React.Component {
 
 const addNewEntryForm = (handleChange, handleSubmit, addFunction, removeFunction, allTags) => {
     return <div className="bg-warning p-5">
-        <div className="row">
+        <div className="row text-center">
+            <h4 className="myPageTitle">Neuer Eintrag</h4>
+        </div>
+        <div className="row text-center">
+            <h6>Tags auswählen</h6>
+        </div>
+        <div className="row bg-light p-3 rounded justify-content-center">
                  {Object.keys(allTags).map(function(keyName, keyIndex){
-                  return <div className="col-auto m-2 " key={ keyIndex }>
+                  return <div className="col-auto m-2" key={ keyIndex }>
                       { <TagButton tag={ allTags[keyName] } addFunction={ addFunction } removeFunction={ removeFunction } /> }
                     </div>
                 })}
         </div>
-        <form onSubmit={ event => handleSubmit(event) }>
-            <input onChange={ event => handleChange(event )} type="text" name="title" placeholder="Titel" className="form-control" />
-            <textarea onChange={ event => handleChange(event )} name="desc" cols="30" rows="10" className="form-control"></textarea>
-            <button type="submit">eintragen</button>
+        <form onSubmit={ event => handleSubmit(event) } className="mt-5">
+            <input onChange={ event => handleChange(event )} type="text" name="title" placeholder="Titel" className="form-control bg-light" />
+            <textarea onChange={ event => handleChange(event )} name="desc" cols="50" rows="40" className="form-control bg-light mt-3" placeholder="Beschreibung"></textarea>
+            <div className="row justify-content-end">
+                <div className="col-auto mt-3">
+                    <button className="btn btn-success" type="submit">eintragen</button>
+                </div>
+            </div>
 
 
         </form>
