@@ -14,9 +14,8 @@ import NewEntry from './components/docs/entries/NewEntry';
 import ShowTags from './components/docs/show/ShowTags';
 
 
+// tokens to sessionstorage
 function setToken(userToken, userRefreshToken) {
-  console.log("userToken")
-  console.log(userToken)
   userToken = "Bearer " + userToken;
   sessionStorage.setItem('token', userToken);
   sessionStorage.setItem("refreshtoken", userRefreshToken)
@@ -26,8 +25,6 @@ function setToken(userToken, userRefreshToken) {
 function getToken() {
   const tokenString = sessionStorage.getItem('token');
   const userToken = tokenString;
-  console.log("usertoken erhalten")
-  console.log(userToken);
   return userToken
 }
 
@@ -39,24 +36,23 @@ function App() {
 
     return (
       <>
-      
       <Router>
         { token ? <>
           <MyNavbar />
-          <Switch>
-                    <Route path="/login" >
-                          <MyLogin setToken={ setToken } /> 
-                    </Route>
-                    <Route path="/newtag" >
-                      <ShowTags token={ token } addOne={ true } />
-                    </Route>
-                    <Route path="/new"  >
-                      <NewEntry token={ token } />
-                    </Route>
-                    <Route path="/">
-                        <Main token={ token } />      
-                    </Route>
-                  </Switch> 
+            <Switch>
+              <Route path="/login" >
+                <MyLogin setToken={ setToken } /> 
+              </Route>
+              <Route path="/newtag" >
+                <ShowTags addOne={ true } />
+              </Route>
+              <Route path="/new"  >
+                <NewEntry />
+              </Route>
+              <Route path="/">
+                  <Main />      
+              </Route>
+            </Switch> 
         </>
         : <MyLogin setToken={ setToken} /> }
       </Router>

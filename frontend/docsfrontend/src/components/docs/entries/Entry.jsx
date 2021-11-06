@@ -101,7 +101,7 @@ class Entry extends React.Component {
         
         this.state = {
           edit: false, // 0: showEntry or 1: showEntryForm  
-          token: this.props.token,
+          //token: this.props.token,
           
           entry: this.props.entry,
 
@@ -181,7 +181,7 @@ class Entry extends React.Component {
             }
 
             var self = this;
-            postDataWithAxios(URL_UPDATE_ENTRY, entryData,this.state.token, function(data){
+            postDataWithAxios(URL_UPDATE_ENTRY, entryData,null, function(data){
                 self.setState({ entry: data.entry })
                 self.setState({ title: data.entry.title })
                 self.setState({ desc: data.entry.desc })

@@ -4,76 +4,95 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 
-
 from . models import Tag, Entry
 from . serializers import TagSerializer, EntrySerializer
 
 
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def main_context(request):
-    entries = Entry.objects.all()
-    entries = EntrySerializer(entries, context={"request": request}, many=True).data
+class BaseContext():
     tags = Tag.objects.all()
-    tags = TagSerializer(tags, context={"request": request}, many=True).data
-    
-    return Response({
-        "allEntries": entries,
-        "allTags": tags,
-        })
-
-
-# frontend: select tags -> all entries with those tags
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def get_entries_by_tags(request):
-    selectedTags = request.data["selectedTags"]
     entries = Entry.objects.all()
-    for tag in selectedTags:
-        entries = entries.filter(tag=tag["id"])
-    if len(entries) == 0:
-        entriesToShow = [{"title":"nichts gefunden"}]
-    else:
-        entriesToShow = EntrySerializer(entries, context={"request": request}, many=True).data
-    return Response({"entriesToShow":entriesToShow})
+    keys = { # all keys returned to frontend
+        "allEntries": "allEntries",
+        "allTags": "allTags",
+        "entriesToShow": "entriesToShow", # entries to show (by tag)
+        "entry":"entry", # single entry
+    }
+    msg = {
+        "noEntryFound": "nichts gefunden", # no entry for tag(s) found
+    }
+
+
+
+class DocsGetData(BaseContext):
+
+    @api_view(['GET'])
+    @permission_classes([IsAuthenticated])
+    def get_all_tags(request):
+        self = DocsGetData()
+        tags = TagSerializer(self.tags, context={"request": request}, many=True).data
+        return Response({
+            self.keys["allTags"]: tags,
+            })
+
+
+    """ 
+    get_entries_by_tags
+    select tags -> return all entries with those tags
+    """
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def get_entries_by_tags(request):
+        self = DocsGetData()
+        selectedTags = request.data["selectedTags"]
+        entries = self.entries
+        for tag in selectedTags:
+            entries = entries.filter(tag=tag["id"])
+        if not entries:
+            entriesToShow = [{"title":self.msg["noEntryFound"]}] # nothing found -> error in title
+        else:
+            entriesToShow = EntrySerializer(entries, context={"request": request}, many=True).data
+        return Response({self.keys["entriesToShow"]:entriesToShow})
     
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def update_entry(request):
-    entry = Entry.objects.get(pk=request.data["id"])
-    entry.title = request.data["title"]
-    entry.desc = request.data["desc"]
-    entry.data = request.data["data"]
-    entry.save()
-    return Response({"entry": EntrySerializer(entry).data})
+
+class DocsEntry(BaseContext):
+
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def add_new_tag(request):
+        self = DocsEntry()
+        name = request.data["name"]
+        tag = Tag.objects.create(name=name)
+        tags = Tag.objects.all()
+        tags = TagSerializer(tags, context={"request": request}, many=True).data
+        return Response({ self.keys["allTags"]: tags })
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def add_new_tag(request):
-    name = request.data["name"]
-    tag = Tag.objects.create(name=name)
-    tags = Tag.objects.all()
-    tags = TagSerializer(tags, context={"request": request}, many=True).data
-    return Response({ "allTags": tags })
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def add_new_entry(request):
+        entry = Entry();
+        tags = request.data["tags"]
+        entry.title = request.data["title"]
+        entry.desc = request.data["desc"]
+        entry.save()
+        for i in tags:
+            tag = Tag.objects.get(pk=i)
+            entry.tag.add(tag)
+        entry.save()
+        return Response({self.keys["entry"]: EntrySerializer(entry).data })
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def add_new_entry(request):
-    entry = Entry();
-    tags = request.data["tags"]
-    entry.title = request.data["title"]
-    entry.desc = request.data["desc"]
-    entry.save()
-    for i in tags:
-        tag = Tag.objects.get(pk=i)
-        entry.tag.add(tag)
-    entry.save()
-    return Response({"entry": EntrySerializer(entry).data })
+    # edit existing entry 
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def update_entry(request):
+        self = DocsEntry()
+        entry = Entry.objects.get(pk=request.data["id"])
+        entry.title = request.data["title"]
+        entry.desc = request.data["desc"]
+        entry.data = request.data["data"]
+        entry.save()
+        return Response({self.keys["entry"]: EntrySerializer(entry).data})
 
 
-def entries_detail(request):
-    pass

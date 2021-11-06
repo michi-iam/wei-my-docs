@@ -7,7 +7,7 @@ import NewTag from "./NewTag";
 
 
 const URL_ADD_NEW_TAG = process.env.REACT_APP_URL_ADD_NEW_TAG
-const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
+const URL_GET_ALL_TAGS = process.env.REACT_APP_URL_GET_ALL_TAGS;
 
 
 class ShowTags extends React.Component {
@@ -15,8 +15,9 @@ class ShowTags extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-          addOne: false,
+          addOne: false, // add new Tag or show tags
           allTags: "",
+          // new Tag
           newTagName: "",
           
         }
@@ -27,19 +28,16 @@ class ShowTags extends React.Component {
        
 
       componentDidMount() {
+        // Add new Tag
         if(this.props.addOne){
           this.setState({ addOne: true })
         }
 
-        if(! this.props.allTags){
-            var self = this;
-            getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
-               self.setState({ allTags: data.allTags });
-             });
-        }
-        else {
-            this.setState({ allTags: this.props.allTags })
-        }
+        // tags to show
+        var self = this;
+          getDataWithAxios(URL_GET_ALL_TAGS, function(data){
+              self.setState({ allTags: data.allTags });
+          });
     }
 
 
@@ -56,32 +54,28 @@ class ShowTags extends React.Component {
 
     handleSubmit(event) {
       event.preventDefault();
-      
       var newTagName = this.state.newTagName;
-      console.log(newTagName)
+ 
       var self = this;
-      postDataWithAxios(URL_ADD_NEW_TAG, { name: newTagName }, this.props.token, function(data){
+      postDataWithAxios(URL_ADD_NEW_TAG, { name: newTagName }, null, function(data){
         self.setState({ allTags: data.allTags })
         self.setState({ addOne: false })
       }, null)
     }
 
       render(){
-        var allTags = this.state.allTags;
-        var selectTag = this.props.selectTag;
-        var addOne = this.state.addOne;
+        var addOne = this.state.addOne; // add new / show existing
+        var allTags = this.state.allTags; // tags to select
+        var selectTagFunc = this.props.selectTagFunc; // add tag in Main.jsx
         var handleChange = this.handleChange;
         var handleSubmit = this.handleSubmit;
         return(
           <div className="container">
-            {/* <div className="row">
-                <button onClick={() => newTagForm() }>neuer Tag</button>
-            </div> */}
-            { addOne ? <NewTag handleChange={handleChange} handleSubmit={handleSubmit} /> //addTagForm(handleChange, handleSubmit)
+            { addOne ? <NewTag handleChange={handleChange} handleSubmit={handleSubmit} /> 
             : <div className="row">
                 {Object.keys(allTags).map(function(keyName, keyIndex){
                   return <div className="col-auto m-2 " key={ keyIndex }>
-                      <button onClick={() => selectTag(allTags[keyName]) } className="btn btn-info">{ allTags[keyName].name }</button>
+                      <button onClick={() => selectTagFunc(allTags[keyName]) } className="btn btn-info">{ allTags[keyName].name }</button>
                     </div>
                 })}
               </div>}

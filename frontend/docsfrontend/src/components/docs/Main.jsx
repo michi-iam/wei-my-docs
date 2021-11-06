@@ -12,7 +12,7 @@ import NewEntry from './entries/NewEntry';
 
 
 
-const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
+const URL_GET_ALL_TAGS = process.env.REACT_APP_URL_GET_ALL_TAGS;
 const URL_GET_ENTRIES_BY_TAGS = process.env.REACT_APP_URL_GET_ENTRIES_BY_TAGS;
 
 
@@ -42,9 +42,10 @@ const showSelectedTags = (selectedTags, removeSelectedTag, getEntriesByTags) => 
 }
 
 
-const showEntriesToShow = ( entriesToShow, token ) => {
+// Show entries by selected tags
+const showEntriesToShow = ( entriesToShow ) => {
   return Object.keys(entriesToShow).map(function(keyName, keyIndex){
-    return <Entry key={ keyIndex } entry={ entriesToShow[keyName] } token={ token } />
+    return <Entry key={ keyIndex } entry={ entriesToShow[keyName] } />
   })
 }
 
@@ -55,15 +56,14 @@ class Main extends React.Component {
     super(props)
     this.state = {
         addNewEntry: false, // get form to add new entry
-        token: this.props.token,
         loggedIn: true,
         contextReady: false,
-        allEntries: [],
+        //allEntries: [],
         allTags: [],
         selectedTags: [],
         entriesToShow: [],
     }
-    this.selectTag = this.selectTag.bind(this);
+    this.selectTagFunc = this.selectTagFunc.bind(this);
     this.removeSelectedTag = this.removeSelectedTag.bind(this);
     this.getEntriesByTags = this.getEntriesByTags.bind(this);
     this.addNewEntryForm = this.addNewEntryForm.bind(this);
@@ -73,8 +73,7 @@ class Main extends React.Component {
 
   componentDidMount() {
     var self = this;
-    getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
-       self.setState({ allEntries: data.allEntries });
+    getDataWithAxios(URL_GET_ALL_TAGS, function(data){
        self.setState({ allTags: data.allTags });
        self.setState({ contextReady: true })
      });
@@ -83,7 +82,7 @@ class Main extends React.Component {
   }
 
   // Tags in ShowTags.jsx auswählen
-  selectTag(tag){
+  selectTagFunc(tag){
     this.setState({ selectedTags: [...this.state.selectedTags, tag ] }) 
   }
 
@@ -95,10 +94,10 @@ class Main extends React.Component {
     this.setState({ entriesToShow: []})
   }
 
+  // get entries by tag 
   getEntriesByTags(selectedTags){
       var self = this;
-
-      postDataWithAxios(URL_GET_ENTRIES_BY_TAGS,{selectedTags: selectedTags}, this.state.token,
+      postDataWithAxios(URL_GET_ENTRIES_BY_TAGS,{selectedTags: selectedTags}, null,
         function(data){
           self.setState({ entriesToShow: data.entriesToShow })
         }, function(){
@@ -116,19 +115,17 @@ class Main extends React.Component {
      var entriesToShow = this.state.entriesToShow;
      var loggedIn = this.state.loggedIn;
      var addNewEntry = this.state.addNewEntry;
-     const token = this.state.token;
-     var allTags = this.state.allTags
 
       return loggedIn ? <div className='container'>
-                        { addNewEntry ? <NewEntry token={ token } allTags={ allTags }/>
+                        { addNewEntry ? <NewEntry /> 
                         : <div> 
                             <div className="row text-center mt-5">
                               <h1 className="myPageTitle">Suchen</h1>
                             </div>
-                            { contextReady ? <ShowTags allTags={ this.state.allTags } selectTag={ this.selectTag } token={ token } /> 
+                            { contextReady ? <ShowTags allTags={ this.state.allTags } selectTagFunc={ this.selectTagFunc } /> 
                             : "" }
                             { showSelectedTags(selectedTags, this.removeSelectedTag, this.getEntriesByTags) }
-                            { showEntriesToShow(entriesToShow, token) }
+                            { showEntriesToShow(entriesToShow) }
 
                             {/* <button onClick={() => addNewEntryForm() }>neuer Eintrag</button> */}
                           </div>}

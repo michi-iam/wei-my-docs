@@ -4,7 +4,7 @@ import getDataWithAxios from "../../axios/MyGetAxios";
 import Entry from "./Entry";
 
 const URL_ADD_NEW_ENTRY = process.env.REACT_APP_URL_ADD_NEW_ENTRY;
-const URL_GET_MAIN_CONTEXT = process.env.REACT_APP_URL_GET_MAIN_CONTEXT;
+const URL_GET_ALL_TAGS = process.env.REACT_APP_URL_GET_ALL_TAGS;
 
 class TagButton extends React.Component {
     constructor(props){
@@ -82,12 +82,11 @@ class NewEntry extends React.Component {
         super(props)
         
         this.state = {
-          token: this.props.token,
-          allTags: [],
+          allTags: [], // mount -> all tags to choose from
 
-          entry: null, // no entry added yet
-
-          tags: [],
+          // New Item
+          entry: null, // entry added after submit
+          tags: [], // selected tags
           title: "",
           desc: "",
   
@@ -100,18 +99,10 @@ class NewEntry extends React.Component {
       }
 
       componentDidMount() {
-          if(! this.props.allTags){
-              var self = this;
-              getDataWithAxios(URL_GET_MAIN_CONTEXT, function(data){
-                 self.setState({ allTags: data.allTags });
-               });
-
-          }
-          else {
-              this.setState({ allTags: this.props.allTags })
-          }
-    
-    
+            var self = this;
+            getDataWithAxios(URL_GET_ALL_TAGS, function(data){
+                self.setState({ allTags: data.allTags });
+            });
       }
 
 
@@ -123,16 +114,12 @@ class NewEntry extends React.Component {
     }
 
     addTag(id){
-        console.log("ADD TAG")
-        console.log(id)
         var tags = this.state.tags;
         tags.push(id)
         this.setState({ tags: tags })
     }
 
     removeTag(id){
-        console.log("REMOVE TAG")
-        console.log(id)
         var tags = this.state.tags;
         this.setState({tags: tags.filter(function(tagId) { 
             return tagId !== id
@@ -142,7 +129,6 @@ class NewEntry extends React.Component {
 
     handleSubmit(event){
         event.preventDefault();
-        console.log("SUBMIT")
         var tags = this.state.tags;
         var title = this.state.title;
         var desc = this.state.desc;
@@ -152,7 +138,7 @@ class NewEntry extends React.Component {
             tags: tags,
             title: title,
             desc: desc,
-        }, this.state.token, function(data){
+        }, null, function(data){
             self.setState({ entry: data.entry })
         }, null)
 
@@ -162,9 +148,9 @@ class NewEntry extends React.Component {
     render(){
         var allTags = this.state.allTags;
         var entry = this.state.entry;
-        var token = this.state.token;
+      
         return(
-            entry ? <Entry token={ token } entry={ entry } /> :
+            entry ? <Entry entry={ entry } /> :
             addNewEntryForm(this.handleChange, this.handleSubmit, this.addTag, this.removeTag, allTags)
         )
     }
