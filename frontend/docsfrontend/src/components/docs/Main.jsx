@@ -43,9 +43,9 @@ const showSelectedTags = (selectedTags, removeSelectedTag, getEntriesByTags) => 
 
 
 // Show entries by selected tags
-const showEntriesToShow = ( entriesToShow ) => {
+const showEntriesToShow = ( entriesToShow, allTags ) => {
   return Object.keys(entriesToShow).map(function(keyName, keyIndex){
-    return <Entry key={ keyIndex } entry={ entriesToShow[keyName] } />
+    return <Entry key={ keyIndex } entry={ entriesToShow[keyName] } allTags={ allTags } />
   })
 }
 
@@ -115,6 +115,7 @@ class Main extends React.Component {
      var entriesToShow = this.state.entriesToShow;
      var loggedIn = this.state.loggedIn;
      var addNewEntry = this.state.addNewEntry;
+     var allTags = this.state.allTags;
 
       return loggedIn ? <div className='container'>
                         { addNewEntry ? <NewEntry /> 
@@ -122,10 +123,10 @@ class Main extends React.Component {
                             <div className="row text-center mt-5">
                               <h1 className="myPageTitle">Suchen</h1>
                             </div>
-                            { contextReady ? <ShowTags allTags={ this.state.allTags } selectTagFunc={ this.selectTagFunc } /> 
+                            { contextReady ? <ShowTags allTags={ allTags } selectTagFunc={ this.selectTagFunc } /> 
                             : "" }
                             { showSelectedTags(selectedTags, this.removeSelectedTag, this.getEntriesByTags) }
-                            { showEntriesToShow(entriesToShow) }
+                            { showEntriesToShow(entriesToShow, allTags) }
 
                             {/* <button onClick={() => addNewEntryForm() }>neuer Eintrag</button> */}
                           </div>}

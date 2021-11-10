@@ -2,10 +2,12 @@ import React from 'react';
 
 
 import postDataWithAxios from "../../axios/MyPostAxios";
-
+import MyButton from '../../../helper/MyButton';
+import TagButton from '../tags/TagButton';
 
 const URL_UPDATE_ENTRY = process.env.REACT_APP_URL_UPDATE_ENTRY
-
+const URL_DELETE_DATAFIELD = process.env.REACT_APP_URL_DELETE_DATAFIELD;
+const URL_ADD_OR_REMOVE_TAG = process.env.REACT_APP_URL_ADD_OR_REMOVE_TAG;
 
 const renameObjectKey = (object, oldName, newName) => {
     const updatedObject = {}
@@ -52,10 +54,18 @@ const showEntry = (entry, entryData, clickFunction) => {
 
 
 // form to edit entry
-const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, handleDataChangeFunction, addDataField, deleteDataField) => {
-    return <div className="container bg-warning rounded mt-5 p-5" >
+const showEntryForm = (allTags, entry, entryData, submitFunction, handleChangeFunction, handleDataChangeFunction, addDataField, deleteDataField, addFunction, removeFunction) => {
+
+    return <div key={ entry.id } className="container bg-warning rounded mt-5 p-5" >
         <div className="row" >
             <h1 className="bg-success p-3 rounded">Eintrag bearbeiten</h1>
+        </div>
+        <div className="row">
+            { Object.keys(allTags).map(function(keyName, keyIndex){
+                return <div className="col-auto">
+                    <TagButton key={ keyIndex } entry={ entry } tag={ allTags[keyName] } addFunction={ addFunction } removeFunction={ removeFunction } />
+                </div>
+            })}
         </div>
         <div className="row">
             <form onSubmit={event => submitFunction(event)}>
@@ -74,7 +84,10 @@ const showEntryForm = (entry, entryData, submitFunction, handleChangeFunction, h
                                 <input name={ keyName } onChange={ event => handleDataChangeFunction(event, "value", keyName) } type="text" defaultValue={ entryData[keyName] } className="form-control bg-light"/>
                             </div>
                             <div className="col-1 text-end">
-                                <button type="button" onClick={() => deleteDataField(keyName) } className="btn btn-danger">X</button>
+                                <MyButton key={ keyIndex } 
+                                clickFunction={() => deleteDataField } params={ keyName } when={ 0 }
+                                texts={[ "x", "wirklich löschen?", "gelöscht"]} classNames={ ["btn btn-success", "btn btn-danger", "btn btn-info"]} 
+                                optionDisable={ true } />
                             </div>
                         </div>
                     })} </div>: ""}
@@ -103,6 +116,7 @@ class Entry extends React.Component {
           edit: false, // 0: showEntry or 1: showEntryForm  
           //token: this.props.token,
           
+          allTags: this.props.allTags,
           entry: this.props.entry,
 
           id: this.props.entry.id,
@@ -117,6 +131,8 @@ class Entry extends React.Component {
         this.handleDataChange = this.handleDataChange.bind(this); // handle change for entry.data 
         this.addDataField = this.addDataField.bind(this);
         this.deleteDataField = this.deleteDataField.bind(this);
+        this.addTagFunc = this.addTagFunc.bind(this);
+        this.remTagFunc = this.remTagFunc.bind(this);
 
       }
 
@@ -134,12 +150,14 @@ class Entry extends React.Component {
       }
 
       deleteDataField(keyName) {
-          console.log(this.state.data)
-          var data = this.state.data;
-          delete(data[keyName])
-          this.setState({ data: data})
-          console.log(data)
-
+          console.log(keyName)
+          var id = this.state.entry.id;
+          postDataWithAxios(URL_DELETE_DATAFIELD,{
+              id:id,
+              keyName:keyName,
+          }, null, function(data){
+              console.log(data)
+          }, null)
       }
 
       toggleEdit() {
@@ -194,7 +212,36 @@ class Entry extends React.Component {
             })
       }
 
+      addTagFunc(tagId){
+        console.log("entry add tag " + tagId)
+        var entryId = this.state.entry.id;
+        var self = this;
+        postDataWithAxios(URL_ADD_OR_REMOVE_TAG, {
+            entryId: entryId,
+            tagId:tagId,
+            removeFrom:0,
+        }, null, function(data){
+            self.setState({ entry: data.entry })
+        }, null)
+
+        
+    }
+    remTagFunc(tagId){
+        console.log("entry remove " + tagId)
+          var entryId = this.state.entry.id;
+          var self = this;
+          postDataWithAxios(URL_ADD_OR_REMOVE_TAG, {
+              entryId: entryId,
+              tagId: tagId,
+              removeFrom:1,
+          }, null, function(data){
+              self.setState({ entry:data.entry })
+          }, null)
+
+      }
+
       render(){
+          var allTags= this.state.allTags;
         var entry = this.state.entry;
         var entryData = this.state.data;
         var edit = this.state.edit;
@@ -204,8 +251,11 @@ class Entry extends React.Component {
         var handleDataChange = this.handleDataChange;
         var addDataField = this.addDataField;
         var deleteDataField = this.deleteDataField;
+        var addTagFunc = this.addTagFunc;
+        var remTagFunc = this.remTagFunc;
+
         return(
-            edit ? showEntryForm(entry, entryData, submitFunction, handleChangeFunction, handleDataChange, addDataField, deleteDataField) 
+            edit ? showEntryForm(allTags,entry, entryData, submitFunction, handleChangeFunction, handleDataChange, addDataField, deleteDataField, addTagFunc, remTagFunc) 
             : showEntry(entry, entryData, toggleEdit)
         )
       }

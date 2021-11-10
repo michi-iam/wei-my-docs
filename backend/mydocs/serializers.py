@@ -11,7 +11,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("id","name")
 
 class EntrySerializer(serializers.HyperlinkedModelSerializer):
-    tags = TagSerializer(many=True, read_only=True)
+    tag = TagSerializer(many=True, read_only=True)
     class Meta:
         model = Entry
-        fields = ("id", "tags", "title", "desc","data")
+        fields = ("id", "tag", "title", "desc","data")

@@ -2,48 +2,12 @@ import React from 'react';
 import postDataWithAxios from "../../axios/MyPostAxios"; 
 import getDataWithAxios from "../../axios/MyGetAxios";
 import Entry from "./Entry";
+import TagButton from '../tags/TagButton';
 
 const URL_ADD_NEW_ENTRY = process.env.REACT_APP_URL_ADD_NEW_ENTRY;
 const URL_GET_ALL_TAGS = process.env.REACT_APP_URL_GET_ALL_TAGS;
 
-class TagButton extends React.Component {
-    constructor(props){
-        super(props)
-        
-        this.state = {
-          tag: this.props.tag,
-          addFunction: this.props.addFunction,
-          removeFunction: this.props.removeFunction,
-          selected: false, 
-  
-        }
-        this.selectTag = this.selectTag.bind(this);
-        this.addFunction = this.props.addFunction.bind(this);
-        this.removeFunction = this.props.removeFunction.bind(this);
-      }
 
-      selectTag() {
-          console.log("SELECT TAG")
-        var selected = this.state.selected;
-        if(selected){
-            this.setState({ selected: false })
-            this.removeFunction(this.state.tag.id)
-        }
-        else{
-            this.setState({ selected: true })
-            this.addFunction(this.state.tag.id)
-        }
-      }
-
-    render(){
-        const tag = this.state.tag;
-        const selectTag = this.selectTag;
-        var selected = this.state.selected;
-        return(
-        <button onClick={() => selectTag() } className={ selected ? "btn btn-success" : "btn btn-danger text-success fw-bolder"}>{ tag.name }</button>
-        )
-    }
-}
 
 
 const addNewEntryForm = (handleChange, handleSubmit, addFunction, removeFunction, allTags) => {

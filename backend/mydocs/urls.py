@@ -10,9 +10,21 @@ urlpatterns = [
 
 #DocsEntry
 urlpatterns += [
-    path('add_new_tag/', apiviews.DocsEntry.add_new_tag),
     path('add_new_entry/', apiviews.DocsEntry.add_new_entry),
     path('update_entry/', apiviews.DocsEntry.update_entry),
+]
+
+#Tags 
+urlpatterns += [
+    path('add_new_tag/', apiviews.DocsEntry.add_new_tag),
+    path('add_or_remove_tag/', apiviews.DocsEntry.add_or_remove_tag),
+
+]
+
+#Datafiels
+urlpatterns += [
+    path('delete_datafield/', apiviews.DocsEntry.delete_datafield),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

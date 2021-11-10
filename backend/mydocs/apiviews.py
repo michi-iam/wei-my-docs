@@ -59,7 +59,7 @@ class DocsEntry(BaseContext):
 
     @api_view(['POST'])
     @permission_classes([IsAuthenticated])
-    def add_new_tag(request):
+    def add_new_tag(request): # tag doesnt exist yet 
         self = DocsEntry()
         name = request.data["name"]
         tag = Tag.objects.create(name=name)
@@ -71,6 +71,7 @@ class DocsEntry(BaseContext):
     @api_view(['POST'])
     @permission_classes([IsAuthenticated])
     def add_new_entry(request):
+        self=DocsEntry()
         entry = Entry();
         tags = request.data["tags"]
         entry.title = request.data["title"]
@@ -95,4 +96,31 @@ class DocsEntry(BaseContext):
         entry.save()
         return Response({self.keys["entry"]: EntrySerializer(entry).data})
 
+
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def delete_datafield(request):
+        entryId = request.data["id"]
+        keyName = request.data["keyName"]
+        if keyName:
+            entry = Entry.objects.get(pk=entryId)
+            entry.data.pop(keyName)
+            entry.save()
+        return Response(200)
+    
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
+    def add_or_remove_tag(request):
+        print(request.data)
+        entry = Entry.objects.get(pk=request.data["entryId"])
+        tag = Tag.objects.get(pk=request.data["tagId"])
+        removeFrom = request.data["removeFrom"]
+        print(entry.tag.all())
+        if removeFrom == 1:
+            entry.tag.remove(tag)
+        else:
+            entry.tag.add(tag)
+        entry.save()
+        print(entry.tag.all())
+        return Response({"entry": EntrySerializer(entry).data})
 
